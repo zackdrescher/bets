@@ -73,6 +73,10 @@ uv is required (install: https://docs.astral.sh/uv/). Full setup in `CONTRIBUTIN
 - Evidence-first, minimal-change, smallest safe diff.
 - Ask before scope grows beyond a bounded task; the user owns product/architecture decisions.
 - Deferred decisions get a `TODO(decision-debt): ...; owner=...; trigger=...` marker.
+- **Keep docs in sync with the change.** When a change alters setup, commands, architecture,
+  a safety gate, or a documented convention, update the reflected docs in the *same* change —
+  `README.md`, `CONTRIBUTING.md`, this `CLAUDE.md`, and any `docs/adr/` entry it affects. Docs
+  and code land together, not as a follow-up. (Skip for changes that touch none of the above.)
 
 ## Agent skills
 
