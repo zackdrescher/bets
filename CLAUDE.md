@@ -50,6 +50,17 @@ docs/strategies/    # written explainers (kelly.md)
 tests/              # pytest — sizing + safety-gate tests are first-class
 ```
 
+## Setup & commands
+
+```
+uv sync                 # reproducible env from uv.lock + .python-version (3.11)
+uv run pytest           # tests
+uv run ruff check .     # lint
+uv run bets ...         # run the CLI
+```
+
+uv is required (install: https://docs.astral.sh/uv/). Full setup in `CONTRIBUTING.md`.
+
 ## Stack & conventions
 
 - uv · Typer · Pydantic · DuckDB · pytest · ruff · `kalshi-python-async`
