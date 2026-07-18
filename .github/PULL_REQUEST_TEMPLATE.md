@@ -11,6 +11,9 @@ convention**, the reflected docs must be updated in this same PR.
 
 - [ ] `README.md`, `CONTRIBUTING.md`, `CLAUDE.md`, and any affected `docs/adr/` entry are updated — **or** this change touches none of the above.
 
+The `docs-sync` CI check enforces this for doc-worthy paths. If it fails but docs truly
+aren't needed, add the **`docs-not-needed`** label.
+
 ## Safety gates
 
 The gates in `CLAUDE.md` are non-negotiable (demo default, `--dry-run` default, per-order

@@ -46,6 +46,14 @@ uv run ruff format .          # format
 Tests for the Kelly function and the safety gates are **required**, not optional. A PR that
 changes money math or a gate without a corresponding test won't be accepted.
 
+## Keep docs in sync
+
+When a change alters setup, commands, architecture, a safety gate, or a documented convention,
+update the reflected docs (`README.md`, `CONTRIBUTING.md`, `CLAUDE.md`, `docs/`) in the **same**
+PR. The `docs-sync` GitHub Action enforces this: if a doc-worthy path changes with no doc
+update, the check fails. If docs genuinely aren't needed, add the **`docs-not-needed`** label to
+the PR. The watched paths live in [`.github/workflows/docs-sync.yml`](.github/workflows/docs-sync.yml).
+
 ## How work flows here
 
 Work is tracked as **GitHub issues** (see [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md))
