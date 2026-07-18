@@ -153,6 +153,10 @@ activemq-data/
 .venv
 env/
 venv/
+
+# Secrets — Kalshi API keys never get committed (safety rule #8)
+secrets/
+*.pem
 ENV/
 env.bak/
 venv.bak/
