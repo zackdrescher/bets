@@ -12,10 +12,24 @@ any of them needs explicit sign-off in the PR description.
 
 ## Getting set up
 
+This project uses [uv](https://docs.astral.sh/uv/) for a reproducible environment. The
+interpreter is pinned in `.python-version` (3.11) and exact dependency versions are locked in
+`uv.lock` — both are committed, so `uv sync` yields the same env for everyone.
+
 ```bash
-uv sync                       # create the env and install deps (incl. dev group)
+# 1. Install uv once (macOS/Linux); see the uv docs for Homebrew/Windows/other installers
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 2. Create the env and install deps (incl. dev group) from the lockfile.
+#    uv fetches the pinned Python automatically if you don't already have it.
+uv sync
+
+# 3. Configure credentials
 cp .env.example .env          # then fill in Kalshi demo credentials
 ```
+
+Changing dependencies? Edit `pyproject.toml`, then run `uv sync` (or `uv lock`) and commit the
+updated `uv.lock` alongside it. Never hand-edit `uv.lock`.
 
 - Credentials load only from env vars or a gitignored secret file. Never commit keys.
   `secrets/` and `*.pem` are gitignored; keep demo and prod key sets separate.
