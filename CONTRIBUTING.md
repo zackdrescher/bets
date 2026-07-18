@@ -88,6 +88,14 @@ Each ticket should stay small enough to finish in one focused session and be ver
 - Keep commits scoped and messages descriptive (what changed and why).
 - Never commit secrets, real keys, or a populated `.env`.
 
+## Merge policy
+
+`main` is protected: changes land via PR, and the `docs-sync` status check must pass before
+merge. Required approving reviews are set to **0** — this is a solo-maintainer repo today, so
+review is a manual step rather than a blocking gate; revisit the count once there's more than
+one collaborator. Repo admins can bypass the protection (e.g. for an urgent direct push), but
+the PR + check path is the default for everyone, always.
+
 ## The audit log is sacred
 
 The DuckDB audit log is **append-only**. Code may insert submit/fill rows; it must never update
