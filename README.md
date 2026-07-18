@@ -54,8 +54,15 @@ for the design and [`docs/strategies/kelly.md`](docs/strategies/kelly.md) for th
 ## Quickstart
 
 ```bash
+# 1. Install uv once (macOS/Linux); see https://docs.astral.sh/uv/ for other options
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 2. Set up the project — uv reads .python-version (3.11) and uv.lock for an exact,
+#    reproducible env. It fetches the pinned Python automatically if you don't have it.
 uv sync
 cp .env.example .env          # fill in Kalshi demo credentials
+
+# 3. Use it
 uv run bets markets list      # read-only, hits demo by default
 uv run bets rec add --market <TICKER> --prob 0.65   # record an estimate + see edge/size
 uv run bets order place --market <TICKER> --dry-run # preview an order (default)
