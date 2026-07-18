@@ -1,0 +1,56 @@
+name: docs-sync
+
+# Hard gate: if a PR changes a doc-worthy source path but touches none of the
+# reflected docs, fail — unless the PR carries the override label. Mirrors the
+# "keep docs in sync" rule in CLAUDE.md. Tune WATCHED / DOCS below as the surface
+# area shifts; keep WATCHED narrow so the gate stays signal, not noise.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  docs-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Require doc updates for doc-worthy changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          OVERRIDE_LABEL: docs-not-needed
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, '|') }}
+        run: |
+          set -euo pipefail
+
+          # Source paths whose changes usually need a doc update.
+          WATCHED='^(pyproject\.toml|\.python-version|src/bets/cli\.py|src/bets/config\.py)$'
+          # Paths that count as a documentation update.
+          DOCS='^(README\.md|CONTRIBUTING\.md|CLAUDE\.md|docs/)'
+
+          # Override: PR carries the docs-not-needed label.
+          if printf '%s' "$LABELS" | tr '|' '\n' | grep -qx "$OVERRIDE_LABEL"; then
+            echo "Override label '$OVERRIDE_LABEL' present — skipping docs-sync gate."
+            exit 0
+          fi
+
+          CHANGED="$(git diff --name-only "$BASE_SHA" HEAD)"
+          echo "Changed files:"; echo "$CHANGED" | sed 's/^/  /'
+
+          if echo "$CHANGED" | grep -qE "$WATCHED"; then
+            if echo "$CHANGED" | grep -qE "$DOCS"; then
+              echo "Doc-worthy change present and docs were updated. OK."
+            else
+              echo "::error::A doc-worthy path changed but no docs were updated."
+              echo "Update README.md / CONTRIBUTING.md / CLAUDE.md / docs/ in this PR,"
+              echo "or add the '$OVERRIDE_LABEL' label if docs genuinely aren't needed."
+              exit 1
+            fi
+          else
+            echo "No doc-worthy paths changed. OK."
+          fi
