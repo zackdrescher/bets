@@ -220,3 +220,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Claude Code — local settings & transient state
+.claude/settings.local.json
+.claude/worktrees/
+
+# Vendored agent skills — restored from skills-lock.json; commit the lock, not the content
+.claude/skills/
+.agents/
