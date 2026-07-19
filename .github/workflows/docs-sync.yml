@@ -2,8 +2,10 @@ name: docs-sync
 
 # Hard gate: if a PR changes a doc-worthy source path but touches none of the
 # reflected docs, fail — unless the PR carries the override label. Mirrors the
-# "keep docs in sync" rule in CLAUDE.md. Tune WATCHED / DOCS below as the surface
-# area shifts; keep WATCHED narrow so the gate stays signal, not noise.
+# "keep docs in sync" rule in CLAUDE.md. src/bets/cli.py changes require
+# docs/cli.md specifically; other watched paths accept any reflected doc. Tune
+# WATCHED_CLI / WATCHED_OTHER / DOCS below as the surface area shifts; keep them
+# narrow so the gate stays signal, not noise.
 
 on:
   pull_request:
@@ -28,8 +30,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Source paths whose changes usually need a doc update.
-          WATCHED='^(pyproject\.toml|\.python-version|src/bets/cli\.py|src/bets/config\.py)$'
+          # src/bets/cli.py changes need docs/cli.md specifically.
+          WATCHED_CLI='^src/bets/cli\.py$'
+          # Other source paths whose changes need any reflected doc.
+          WATCHED_OTHER='^(pyproject\.toml|\.python-version|src/bets/config\.py)$'
           # Paths that count as a documentation update.
           DOCS='^(README\.md|CONTRIBUTING\.md|CLAUDE\.md|docs/)'
 
@@ -42,15 +46,33 @@ jobs:
           CHANGED="$(git diff --name-only "$BASE_SHA" HEAD)"
           echo "Changed files:"; echo "$CHANGED" | sed 's/^/  /'
 
-          if echo "$CHANGED" | grep -qE "$WATCHED"; then
+          FAIL=0
+
+          if echo "$CHANGED" | grep -qE "$WATCHED_CLI"; then
+            if echo "$CHANGED" | grep -qxF "docs/cli.md"; then
+              echo "CLI surface changed and docs/cli.md was updated. OK."
+            else
+              echo "::error::src/bets/cli.py changed but docs/cli.md was not updated."
+              FAIL=1
+            fi
+          fi
+
+          if echo "$CHANGED" | grep -qE "$WATCHED_OTHER"; then
             if echo "$CHANGED" | grep -qE "$DOCS"; then
               echo "Doc-worthy change present and docs were updated. OK."
             else
               echo "::error::A doc-worthy path changed but no docs were updated."
-              echo "Update README.md / CONTRIBUTING.md / CLAUDE.md / docs/ in this PR,"
-              echo "or add the '$OVERRIDE_LABEL' label if docs genuinely aren't needed."
-              exit 1
+              FAIL=1
             fi
-          else
+          fi
+
+          if [ "$FAIL" -eq 1 ]; then
+            echo "Update the relevant docs in this PR (docs/cli.md for CLI changes;"
+            echo "README.md / CONTRIBUTING.md / CLAUDE.md / docs/ otherwise),"
+            echo "or add the '$OVERRIDE_LABEL' label if docs genuinely aren't needed."
+            exit 1
+          fi
+
+          if ! echo "$CHANGED" | grep -qE "${WATCHED_CLI}|${WATCHED_OTHER}"; then
             echo "No doc-worthy paths changed. OK."
           fi
