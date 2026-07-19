@@ -75,8 +75,13 @@ uv is required (install: https://docs.astral.sh/uv/). Full setup in `CONTRIBUTIN
 - Deferred decisions get a `TODO(decision-debt): ...; owner=...; trigger=...` marker.
 - **Keep docs in sync with the change.** When a change alters setup, commands, architecture,
   a safety gate, or a documented convention, update the reflected docs in the *same* change —
-  `README.md`, `CONTRIBUTING.md`, this `CLAUDE.md`, and any `docs/adr/` entry it affects. Docs
-  and code land together, not as a follow-up. (Skip for changes that touch none of the above.)
+  `README.md`, `CONTRIBUTING.md`, this `CLAUDE.md`, `docs/cli.md`, and any `docs/adr/` entry it
+  affects. Docs and code land together, not as a follow-up. (Skip for changes that touch none of
+  the above.)
+- **CLI surface changes require `docs/cli.md`.** Any change to `src/bets/cli.py` — a new
+  command, a new/changed flag, a changed default, or changed behavior — must update
+  `docs/cli.md` in the same PR. The `docs-sync` CI gate enforces this specifically (not just
+  "some doc under `docs/`").
 
 ## Agent skills
 
