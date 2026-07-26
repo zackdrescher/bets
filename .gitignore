@@ -153,6 +153,10 @@ activemq-data/
 .venv
 env/
 venv/
+
+# Secrets — Kalshi API keys never get committed (safety rule #8)
+secrets/
+*.pem
 ENV/
 env.bak/
 venv.bak/
@@ -216,3 +220,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Claude Code — local settings & transient state
+.claude/settings.local.json
+.claude/worktrees/
+
+# Vendored agent skills — restored from skills-lock.json; commit the lock, not the content
+.claude/skills/
+.agents/
