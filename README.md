@@ -63,12 +63,15 @@ uv sync
 cp .env.example .env          # fill in Kalshi demo credentials
 
 # 3. Use it
-uv run bets markets list      # read-only, hits demo by default
+uv run bets markets quote <TICKER>                  # read-only, hits demo by default
 uv run bets rec add --market <TICKER> --prob 0.65   # record an estimate + see edge/size
-uv run bets order place --market <TICKER> --dry-run # preview an order (default)
+uv run bets order place --market <TICKER> --prob 0.65 --dry-run # preview an order (default)
 ```
 
 > Nothing places a real order unless you pass the explicit live/submit flags. See safety gates above.
+
+See [`docs/cli.md`](docs/cli.md) for the full command reference — every command, flag, and an
+example of each, including `bets env` and the `order panic` kill-switch.
 
 ## Disclaimer
 
