@@ -88,3 +88,18 @@ def test_markets_quote_invokes_unwired_kalshi_port(tmp_path, monkeypatch):
     result = runner.invoke(app, ["markets", "quote", "TICK"])
     assert result.exit_code != 0
     assert isinstance(result.exception, NotImplementedError)
+
+
+def test_rec_add_without_yes_price_does_not_persist_on_unwired_quote(tmp_path, monkeypatch):
+    from bets.store.repo import Repo
+
+    db_path = _db_path(tmp_path, monkeypatch)
+    result = runner.invoke(app, ["rec", "add", "--market", "TICK", "--prob", "0.65"])
+    assert result.exit_code != 0
+    assert isinstance(result.exception, NotImplementedError)
+
+    repo = Repo(db_path)
+    try:
+        assert repo.latest_estimate("TICK") is None
+    finally:
+        repo.close()

@@ -68,16 +68,16 @@ def rec_add(
     settings = load_settings()
     estimate = Estimate(ticker=market, prob_yes=prob)
 
+    if yes_price is not None:
+        quote = MarketQuote(ticker=market, yes_price=yes_price)
+    else:
+        quote = asyncio.run(_fetch_quote(market))
+
     repo = Repo(settings.db_path)
     try:
         repo.record_estimate(estimate.ticker, estimate.prob_yes)
     finally:
         repo.close()
-
-    if yes_price is not None:
-        quote = MarketQuote(ticker=market, yes_price=yes_price)
-    else:
-        quote = asyncio.run(_fetch_quote(market))
 
     strategy = KellyStrategy(
         kelly_fraction=settings.kelly_fraction, edge_threshold=settings.edge_threshold
