@@ -46,6 +46,14 @@ uv run ruff format .          # format
 Tests for the Kelly function and the safety gates are **required**, not optional. A PR that
 changes money math or a gate without a corresponding test won't be accepted.
 
+## Keep docs in sync
+
+When a change alters setup, commands, architecture, a safety gate, or a documented convention,
+update the reflected docs (`README.md`, `CONTRIBUTING.md`, `CLAUDE.md`, `docs/`) in the **same**
+PR. The `docs-sync` GitHub Action enforces this: if a doc-worthy path changes with no doc
+update, the check fails. If docs genuinely aren't needed, add the **`docs-not-needed`** label to
+the PR. The watched paths live in [`.github/workflows/docs-sync.yml`](.github/workflows/docs-sync.yml).
+
 ## How work flows here
 
 Work is tracked as **GitHub issues** (see [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md))
@@ -79,6 +87,14 @@ Each ticket should stay small enough to finish in one focused session and be ver
 - Branch off `main`; don't commit directly to it.
 - Keep commits scoped and messages descriptive (what changed and why).
 - Never commit secrets, real keys, or a populated `.env`.
+
+## Merge policy
+
+`main` is protected: changes land via PR, and the `docs-sync` status check must pass before
+merge. Required approving reviews are set to **0** — this is a solo-maintainer repo today, so
+review is a manual step rather than a blocking gate; revisit the count once there's more than
+one collaborator. Repo admins can bypass the protection (e.g. for an urgent direct push), but
+the PR + check path is the default for everyone, always.
 
 ## The audit log is sacred
 
